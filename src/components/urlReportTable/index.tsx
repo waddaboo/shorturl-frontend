@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, ConfigProvider, Popconfirm, Table, TablePaginationConfig } from 'antd';
+import { Button, ConfigProvider, Popconfirm, Table, TablePaginationConfig, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { deleteShortUrl, getUrlReport, redirectUrl } from 'src/apis/url';
 import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { baseUrl } from 'src/utils/request.util';
 
 export type ShortenUrlType = {
   id: string;
@@ -78,11 +79,13 @@ function UrlReportTable() {
     });
   };
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const onShortUrlClick = async (url: string) => {
     setLoading(true);
-    const response: string = await redirectUrl(url);
+    const response = `${baseUrl}/url/redirect/${url}`;
 
-    window.open(response, '_blank');
+    navigator.clipboard.writeText(response);
 
     await callbackState.cb({
       pagination: {
@@ -92,6 +95,11 @@ function UrlReportTable() {
     });
 
     setLoading(false);
+
+    messageApi.open({
+      type: 'success',
+      content: 'URL coppied to clipboard.',
+    });
   };
 
   const onDeleteClick = async (id: string) => {
@@ -193,13 +201,13 @@ function UrlReportTable() {
     },
     {
       title: 'Latitude',
-      dataIndex: 'latitide',
+      dataIndex: 'latitude',
       key: 'latitude',
     },
     {
-      title: 'Longtitude',
-      dataIndex: 'longtitude',
-      key: 'longtitude',
+      title: 'Longitude',
+      dataIndex: 'longitude',
+      key: 'longitude',
     },
   ];
 
@@ -222,18 +230,21 @@ function UrlReportTable() {
   };
 
   return (
-    <Table
-      rowKey="id"
-      columns={columns}
-      expandable={{
-        rowExpandable: (record) => record.Geolocation.length > 0,
-        expandedRowRender: (record) => expandedTable(record),
-      }}
-      loading={loading}
-      pagination={tablePagination}
-      onChange={onTableChange}
-      dataSource={[...urlReportDataSource]}
-    />
+    <>
+      {contextHolder}
+      <Table
+        rowKey="id"
+        columns={columns}
+        expandable={{
+          rowExpandable: (record) => record.Geolocation.length > 0,
+          expandedRowRender: (record) => expandedTable(record),
+        }}
+        loading={loading}
+        pagination={tablePagination}
+        onChange={onTableChange}
+        dataSource={[...urlReportDataSource]}
+      />
+    </>
   );
 }
 

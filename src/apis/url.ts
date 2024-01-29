@@ -46,7 +46,7 @@ export const shortenUrl = async (form: { targetUrl: string }) => {
 };
 
 export const redirectUrl = async (shortUrl: string) => {
-  const response = await fetch(`${baseUrl}/url/redirect/${shortUrl}`, {
+  const response = await fetch(`${baseUrl}/url/redirect/front/${shortUrl}`, {
     method: 'GET',
   })
     .then(async (res) => {
