@@ -44,7 +44,10 @@ npm run local
 ```
 
 5. Visit http://localhost:3000 in your browser.
-6. Start shortening URLs!
+
+6. Alternatively, visit https://shorturl-frontend-dot-shorturl-412709.as.r.appspot.com/ for hosted version.
+
+7. Start shortening URLs!
 
 ### Notes
 
